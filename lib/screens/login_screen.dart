@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_menu_waiter_app/api/smert_menu_api.dart';
+import 'package:smart_menu_waiter_app/models/official.dart';
+import 'package:smart_menu_waiter_app/utils/logger.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +18,26 @@ class _LoginScreenState extends State<LoginScreen> {
   String email = "";
   String password = "";
 
-  void login() {}
+  Future<void> login() async {
+    ResponseJson loginReq = await SmartMenuApi.login(email, password);
+
+    if (!loginReq.success) {
+      showErro(loginReq.message);
+      return;
+    }
+
+    Official official = Official.fromJson(loginReq.data!);
+
+    Logger.log(official.restaurant!.tables.length);
+  }
+
+  void showErro(String error) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(error, style: const TextStyle(color: Colors.black)),
+      backgroundColor: Colors.red[300],
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
