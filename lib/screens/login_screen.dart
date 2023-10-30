@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/api/smert_menu_api.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
-import 'package:smart_menu_waiter_app/utils/logger.dart';
+import 'package:smart_menu_waiter_app/screens/restaurant_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,10 +28,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Official official = Official.fromJson(loginReq.data!);
 
-    Logger.log(official.restaurant!.tables.length);
+    goToRestaurantScreen(official);
+  }
 
-    SmartMenuSocketApi().officialId = official.id;
-    SmartMenuSocketApi().connect();
+  goToRestaurantScreen(Official official) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => RestaurantScreen(
+          official: official,
+        ),
+      ),
+      (route) => true,
+    );
   }
 
   void showErro(String error) {

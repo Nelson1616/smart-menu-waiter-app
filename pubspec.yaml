@@ -27,6 +27,14 @@ flutter:
 
   assets:
     - images/logo_expanded.png
+    - images/avatar_1.png
+    - images/avatar_2.png
+    - images/avatar_3.png
+    - images/avatar_4.png
+    - images/avatar_5.png
+    - images/avatar_6.png
+    - images/avatar_7.png
+    - images/avatar_8.png
 
   fonts:
   - family: Sofia

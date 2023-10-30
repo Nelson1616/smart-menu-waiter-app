@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_menu_waiter_app/models/product.dart';
+import 'package:smart_menu_waiter_app/models/session.dart';
 import 'package:smart_menu_waiter_app/models/session_order_user.dart';
 
 class SessionOrder {
@@ -13,6 +14,7 @@ class SessionOrder {
   String createdAt;
   String updatedAt;
   Map<String, dynamic> json;
+  Session? session;
   List<SessionOrderUser> sessionOrderUsers = [];
   Product? product;
 
@@ -29,6 +31,10 @@ class SessionOrder {
       required this.json}) {
     if (json['product'] != null) {
       product = Product.fromJson(json['product']);
+    }
+
+    if (json['session'] != null) {
+      session = Session.fromJson(json['session']);
     }
 
     if (json['sessionOrderUser'] != null) {
