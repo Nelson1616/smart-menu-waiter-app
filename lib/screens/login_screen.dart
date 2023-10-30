@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/api/smert_menu_api.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
 import 'package:smart_menu_waiter_app/utils/logger.dart';
@@ -29,6 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Official official = Official.fromJson(loginReq.data!);
 
     Logger.log(official.restaurant!.tables.length);
+
+    SmartMenuSocketApi().officialId = official.id;
+    SmartMenuSocketApi().connect();
   }
 
   void showErro(String error) {
