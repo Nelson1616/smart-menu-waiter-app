@@ -25,22 +25,27 @@ class _UserBarState extends State<UserBar> {
       ),
       padding: const EdgeInsets.only(right: 8, left: 3, top: 3, bottom: 3),
       margin: const EdgeInsets.all(4),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: CircleAvatar(
-              backgroundImage: AssetImage(
-                  "images/avatar_${widget.sessionUser.user!.imageId}.png"),
-              backgroundColor: Colors.red,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              child: CircleAvatar(
+                backgroundImage: AssetImage(
+                    "images/avatar_${widget.sessionUser.user!.imageId}.png"),
+                backgroundColor: Colors.red,
+              ),
             ),
-          ),
-          Text(
-            widget.sessionUser.user!.name,
-            style: const TextStyle(
-                fontFamily: 'Sofia', fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-        ],
+            Text(
+              widget.sessionUser.user!.name,
+              style: const TextStyle(
+                  fontFamily: 'Sofia',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ),
     );
   }

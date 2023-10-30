@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:smart_menu_waiter_app/api/smert_menu_api.dart';
 import 'package:smart_menu_waiter_app/models/session.dart';
 import 'package:smart_menu_waiter_app/models/session_order.dart';
 import 'package:smart_menu_waiter_app/models/session_user.dart';
+import 'package:smart_menu_waiter_app/models/session_waiter_call.dart';
 import 'package:smart_menu_waiter_app/utils/logger.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -25,29 +25,39 @@ class SmartMenuSocketApi {
   Function? onSocketErrorListener;
   Function? onSocketUsersListener;
   Function? onSocketOrdersListener;
+  Function? onSocketWaiterCallsListener;
 
   void setOnSocketErrorListener(Function onSocketErrorListener) {
     if (this.onSocketErrorListener != onSocketErrorListener) {
-      debugPrint("setOnSocketErrorListener");
+      Logger.log("setOnSocketErrorListener");
       this.onSocketErrorListener = onSocketErrorListener;
     }
   }
 
   void setOnSocketUsersListener(Function onSocketUsersListener) {
     if (this.onSocketUsersListener != onSocketUsersListener) {
-      debugPrint("setOnSocketUsersListener = $onSocketUsersListener");
+      Logger.log("setOnSocketUsersListener = $onSocketUsersListener");
       this.onSocketUsersListener = onSocketUsersListener;
     }
   }
 
   void setOnSocketOrdersListener(Function onSocketOrdersListener) {
     if (this.onSocketOrdersListener != onSocketOrdersListener) {
-      debugPrint("setOnSocketOrdersListener");
+      Logger.log("setOnSocketOrdersListener");
       this.onSocketOrdersListener = onSocketOrdersListener;
     }
   }
 
+  void setOnSocketWaiterCallsListener(Function onSocketWaiterCallsListener) {
+    if (this.onSocketWaiterCallsListener != onSocketWaiterCallsListener) {
+      Logger.log("setOnSocketWaiterCallsListener");
+      this.onSocketWaiterCallsListener = onSocketWaiterCallsListener;
+    }
+  }
+
   Map<int, TableReference> tables = {};
+
+  List<SessionWaiterCall> sessionWaiterCalls = [];
 
   SmartMenuSocketApi._internal();
 
@@ -80,6 +90,7 @@ class SmartMenuSocketApi {
     onSocketErrorListener = null;
     onSocketOrdersListener = null;
     onSocketUsersListener = null;
+    onSocketWaiterCallsListener = null;
 
     officialId = null;
 
@@ -93,24 +104,25 @@ class SmartMenuSocketApi {
     onSocketErrorListener = null;
     onSocketOrdersListener = null;
     onSocketUsersListener = null;
+    onSocketWaiterCallsListener = null;
   }
 
   void setupSocket() {
     if (socket != null) {
       socket!.on('error', (data) {
-        // debugPrint('$data');
+        // Logger.log('$data');
         if (onSocketErrorListener != null) {
           onSocketErrorListener!(data);
         }
       });
 
-      socket!.on('message', (data) => debugPrint('$data'));
+      socket!.on('message', (data) => Logger.log('$data'));
 
-      socket!.on('connect_error', (data) => debugPrint('$data'));
+      socket!.on('connect_error', (data) => Logger.log('$data'));
 
       socket!.on('users', (data) {
         try {
-          debugPrint('users atualizado');
+          Logger.log('users atualizado');
 
           Map<String, dynamic> response = data;
 
@@ -150,7 +162,7 @@ class SmartMenuSocketApi {
 
       socket!.on('orders', (data) {
         try {
-          debugPrint('orders atualizado');
+          Logger.log('orders atualizado');
 
           List<SessionOrder> sessionOrders = [];
 
@@ -182,7 +194,30 @@ class SmartMenuSocketApi {
             onSocketOrdersListener!();
           }
         } on Error catch (e) {
-          debugPrint('$e');
+          Logger.log('$e');
+        }
+      });
+
+      socket!.on('on_waiter_call', (data) {
+        try {
+          Logger.log('waitercalls atualizado');
+
+          Map<String, dynamic> response = data;
+
+          sessionWaiterCalls = [];
+
+          for (int i = 0;
+              i < (response['sessionWaiterCalls'] as List<dynamic>).length;
+              i++) {
+            sessionWaiterCalls.add(
+                SessionWaiterCall.fromJson(response['sessionWaiterCalls'][i]));
+          }
+
+          if (onSocketWaiterCallsListener != null) {
+            onSocketWaiterCallsListener!();
+          }
+        } on Error catch (e) {
+          Logger.log('$e');
         }
       });
     }

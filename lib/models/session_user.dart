@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_menu_waiter_app/models/session.dart';
 import 'package:smart_menu_waiter_app/models/user.dart';
 
 class SessionUser {
@@ -10,6 +11,7 @@ class SessionUser {
   String createdAt;
   String updatedAt;
   Map<String, dynamic> json;
+  Session? session;
   User? user;
 
   SessionUser(
@@ -23,6 +25,10 @@ class SessionUser {
       required this.json}) {
     if (json['user'] != null) {
       user = User.fromJson(json['user']);
+    }
+
+    if (json['session'] != null) {
+      session = Session.fromJson(json['session']);
     }
   }
 

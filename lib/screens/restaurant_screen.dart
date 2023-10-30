@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/components/order_item.dart';
 import 'package:smart_menu_waiter_app/components/table_item.dart';
+import 'package:smart_menu_waiter_app/components/waiter_call_item.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
 import 'package:smart_menu_waiter_app/models/session_order.dart';
 import 'package:smart_menu_waiter_app/models/table.dart';
@@ -43,6 +44,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   List<Container> orders = [];
 
   List<Container> tableItems = [];
+
+  List<Container> waiterCalls = [];
 
   void onSocketOrdersListener({bool state = true}) {
     try {
@@ -88,15 +91,38 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     }
   }
 
+  void onSocketWaiterCallsListener({bool state = true}) {
+    try {
+      waiterCalls = [];
+
+      for (int i = 0; i < SmartMenuSocketApi().sessionWaiterCalls.length; i++) {
+        waiterCalls.add(Container(
+          margin: EdgeInsets.all(screenWidth * 0.05),
+          child: WaiterCallItem(
+              waiterCall: SmartMenuSocketApi().sessionWaiterCalls[i],
+              maxWidth: screenWidth * 0.9),
+        ));
+      }
+      if (state) {
+        setState(() {});
+      }
+    } on Error catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
 
     SmartMenuSocketApi().officialId = widget.official.id;
     SmartMenuSocketApi().setOnSocketOrdersListener(onSocketOrdersListener);
+    SmartMenuSocketApi()
+        .setOnSocketWaiterCallsListener(onSocketWaiterCallsListener);
     SmartMenuSocketApi().connect();
 
     onSocketOrdersListener(state: false);
+    onSocketWaiterCallsListener(state: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -150,7 +176,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           child: (<Widget>[
             Column(children: tableItems),
             Column(children: orders),
-            const Column(children: []),
+            Column(children: waiterCalls),
           ]).elementAt(bottonNavegationIndex),
         ),
       ),
