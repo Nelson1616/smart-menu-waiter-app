@@ -8,13 +8,12 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 class TableReference {
   int id;
-  int sessionId;
+  int? sessionId;
   int number;
   List<SessionUser> sessionUsers = [];
   List<SessionOrder> sessionOrders = [];
 
-  TableReference(
-      {required this.id, required this.sessionId, required this.number});
+  TableReference({required this.id, this.sessionId, required this.number});
 }
 
 class SmartMenuSocketApi {

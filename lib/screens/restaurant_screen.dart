@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/components/order_item.dart';
+import 'package:smart_menu_waiter_app/components/table_item.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
 import 'package:smart_menu_waiter_app/models/session_order.dart';
+import 'package:smart_menu_waiter_app/models/table.dart';
 
 class RestaurantScreen extends StatefulWidget {
   final Official official;
@@ -40,11 +42,31 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   List<Container> orders = [];
 
+  List<Container> tableItems = [];
+
   void onSocketOrdersListener({bool state = true}) {
     try {
+      for (int i = 0; i < widget.official.restaurant!.tables.length; i++) {
+        RestaurantTable table = widget.official.restaurant!.tables[i];
+
+        if (SmartMenuSocketApi().tables[table.id] == null) {
+          SmartMenuSocketApi().tables[table.id] =
+              TableReference(id: table.id, number: table.number);
+        }
+      }
+
       orders = [];
+      tableItems = [];
 
       SmartMenuSocketApi().tables.forEach((tableId, tableReference) {
+        tableItems.add(Container(
+          margin: EdgeInsets.all(screenWidth * 0.05),
+          child: TableItem(
+            tableReference: tableReference,
+            maxWidth: screenWidth,
+          ),
+        ));
+
         for (int i = 0; i < tableReference.sessionOrders.length; i++) {
           SessionOrder sessionOrder = tableReference.sessionOrders[i];
 
@@ -126,7 +148,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         scrollDirection: Axis.vertical,
         child: Container(
           child: (<Widget>[
-            const Column(children: []),
+            Column(children: tableItems),
             Column(children: orders),
             const Column(children: []),
           ]).elementAt(bottonNavegationIndex),
