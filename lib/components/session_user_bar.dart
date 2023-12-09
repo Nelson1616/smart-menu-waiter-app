@@ -12,11 +12,7 @@ class UserBar extends StatefulWidget {
 
 class _UserBarState extends State<UserBar> {
   pay() {
-    try {
-      SmartMenuSocketApi().pay(widget.sessionUser.id);
-    } on Exception catch (e) {
-      // widget.controller.showErro(context, e);
-    }
+    SmartMenuSocketApi().pay(widget.sessionUser.id);
   }
 
   @override
@@ -64,6 +60,7 @@ class _UserBarState extends State<UserBar> {
                     child: ElevatedButton(
                       onPressed: () {
                         pay();
+                        Navigator.pop(dialogContext);
                       },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
