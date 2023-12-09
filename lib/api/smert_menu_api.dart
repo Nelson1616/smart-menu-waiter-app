@@ -58,4 +58,18 @@ class SmartMenuApi {
 
     return ResponseJson(json['success'], json['message'], json['data']);
   }
+
+  static Future<ResponseJson> getOfficalData(int id) async {
+    http.Response response = await get('officials/$id');
+
+    Map<String, dynamic> json;
+
+    json = jsonDecode(response.body);
+
+    if (json['success'] == null) {
+      throw Exception("Invalid response from api");
+    }
+
+    return ResponseJson(json['success'], json['message'], json['data']);
+  }
 }

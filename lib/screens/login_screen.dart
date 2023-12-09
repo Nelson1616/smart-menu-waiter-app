@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_menu_waiter_app/api/smert_menu_api.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
 import 'package:smart_menu_waiter_app/screens/restaurant_screen.dart';
@@ -28,7 +29,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Official official = Official.fromJson(loginReq.data!);
 
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt('officialId', official.id);
+
     goToRestaurantScreen(official);
+  }
+
+  Future<void> getOfficialData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? officialId = prefs.getInt('officialId');
+
+    if (officialId != null) {
+      ResponseJson loginReq = await SmartMenuApi.getOfficalData(officialId);
+
+      if (!loginReq.success) {
+        showErro(loginReq.message);
+        return;
+      }
+
+      Official official = Official.fromJson(loginReq.data!);
+
+      await prefs.setInt('officialId', official.id);
+
+      goToRestaurantScreen(official);
+    }
   }
 
   goToRestaurantScreen(Official official) {
@@ -48,6 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
       content: Text(error, style: const TextStyle(color: Colors.black)),
       backgroundColor: Colors.red[300],
     ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getOfficialData();
+    });
   }
 
   @override

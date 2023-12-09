@@ -49,7 +49,7 @@ class _TableItemState extends State<TableItem> {
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
-        color: Colors.brown,
+        color: Color.fromARGB(255, 230, 120, 120),
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

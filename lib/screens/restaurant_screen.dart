@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/components/order_item.dart';
 import 'package:smart_menu_waiter_app/components/table_item.dart';
@@ -6,6 +7,7 @@ import 'package:smart_menu_waiter_app/components/waiter_call_item.dart';
 import 'package:smart_menu_waiter_app/models/official.dart';
 import 'package:smart_menu_waiter_app/models/session_order.dart';
 import 'package:smart_menu_waiter_app/models/table.dart';
+import 'package:smart_menu_waiter_app/screens/login_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
   final Official official;
@@ -21,7 +23,18 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   final String expandedLogoImage = 'images/logo_expanded.png';
   final Color mainColor = const Color(0xFFE42626);
 
-  void logout() {}
+  Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.remove('officialId').then((value) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+        (route) => true,
+      );
+    });
+  }
 
   void showErro(String error) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
