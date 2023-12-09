@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/components/session_user_bar.dart';
 import 'package:smart_menu_waiter_app/models/session_waiter_call.dart';
 
@@ -14,7 +15,9 @@ class WaiterCallItem extends StatefulWidget {
 }
 
 class _WaiterCallItemState extends State<WaiterCallItem> {
-  void updateWaiterCall() {}
+  void updateWaiterCall() {
+    SmartMenuSocketApi().updateWaiterCall(widget.waiterCall.id);
+  }
 
   @override
   Widget build(BuildContext context) {

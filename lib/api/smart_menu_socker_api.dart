@@ -73,7 +73,7 @@ class SmartMenuSocketApi {
         }
       }
 
-      socket = io('${SmartMenuApi.mainIp}:3016/', <String, dynamic>{
+      socket = io('${SmartMenuApi.mainIp}/', <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
         'query': {
@@ -119,6 +119,12 @@ class SmartMenuSocketApi {
       socket!.on('message', (data) => Logger.log('$data'));
 
       socket!.on('connect_error', (data) => Logger.log('$data'));
+
+      socket!.on('connect', (data) {
+        Logger.log('$data');
+
+        socket!.emit("join_official", {"official_id": officialId});
+      });
 
       socket!.on('users', (data) {
         try {
@@ -221,5 +227,10 @@ class SmartMenuSocketApi {
         }
       });
     }
+  }
+
+  void updateWaiterCall(int waiterCallId) {
+    socket!.emit("update_waiter_call",
+        {"official_id": officialId, "waiter_call_id": waiterCallId});
   }
 }
