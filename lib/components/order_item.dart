@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_menu_waiter_app/api/smart_menu_socker_api.dart';
 import 'package:smart_menu_waiter_app/components/session_user_bar.dart';
 import 'package:smart_menu_waiter_app/models/session_order.dart';
 import 'package:smart_menu_waiter_app/models/session_order_user.dart';
@@ -24,11 +25,21 @@ class _OrderItemState extends State<OrderItem> {
         widget.sessionOrder.statusId != 0;
   }
 
-  void cancelOrder() {}
+  void cancelOrder() {
+    SmartMenuSocketApi().cancelOrder(widget.sessionOrder.id);
+  }
 
-  void receiveOrder() {}
+  void receiveOrder() {
+    SmartMenuSocketApi().updateOrder(widget.sessionOrder.id);
+  }
 
-  void deliverOrder() {}
+  void deliverOrder() {
+    SmartMenuSocketApi().updateOrder(widget.sessionOrder.id);
+  }
+
+  void downgradeOrder() {
+    SmartMenuSocketApi().downgradeOrder(widget.sessionOrder.id);
+  }
 
   Widget createTableNumberText() {
     return Text(
@@ -104,6 +115,32 @@ class _OrderItemState extends State<OrderItem> {
               Text("Entregar Pedido"),
               Icon(
                 Icons.check,
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget createDowngradeOrderButton() {
+    if (widget.sessionOrder.statusId > 1) {
+      return Container(
+        padding: const EdgeInsets.only(top: 10, bottom: 10),
+        height: 60,
+        width: widget.maxWidth * 0.8,
+        child: ElevatedButton(
+          onPressed: () async {
+            downgradeOrder();
+          },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Voltar Status"),
+              Icon(
+                Icons.arrow_back,
               ),
             ],
           ),
@@ -263,6 +300,7 @@ class _OrderItemState extends State<OrderItem> {
                 children: [
                   createDeliverOrderButton(),
                   createReceiveOrderButton(),
+                  createDowngradeOrderButton(),
                   createCancelOrderButton(),
                 ],
               )

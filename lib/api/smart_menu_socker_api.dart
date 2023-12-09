@@ -233,4 +233,19 @@ class SmartMenuSocketApi {
     socket!.emit("update_waiter_call",
         {"official_id": officialId, "waiter_call_id": waiterCallId});
   }
+
+  void updateOrder(int sessionOrderId) {
+    socket!.emit("update_order",
+        {"official_id": officialId, "session_order_id": sessionOrderId});
+  }
+
+  void downgradeOrder(int sessionOrderId) {
+    socket!.emit("downgrade_order",
+        {"official_id": officialId, "session_order_id": sessionOrderId});
+  }
+
+  void cancelOrder(int sessionOrderId) {
+    socket!.emit("cancel_order",
+        {"official_id": officialId, "session_order_id": sessionOrderId});
+  }
 }
