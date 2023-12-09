@@ -248,4 +248,9 @@ class SmartMenuSocketApi {
     socket!.emit("cancel_order",
         {"official_id": officialId, "session_order_id": sessionOrderId});
   }
+
+  void pay(int sessionUserId) {
+    socket!.emit("pay_by_waiter",
+        {"official_id": officialId, "session_user_id": sessionUserId});
+  }
 }
